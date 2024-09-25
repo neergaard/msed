@@ -160,14 +160,14 @@ def predict_events(
             df.loc[idx, "Success"] = True
             subject_pred_path = target_dir / f"{subject_id}.csv"
             logger.info(f'[ {subject_id} ] Saving predictions at "{subject_pred_path}"...')
-            event_start, event_stop, duration, classes = zip(
+            event_start_idx, event_stop_idx, duration_idx, event_start, event_stop, duration, classes = zip(
                 *[
-                    (ev[0] / FS, ev[1] / FS, ev[1] / FS - ev[0] / FS, class_name)
+                    (ev[0], ev[1], ev[1] - ev[0], ev[0] / FS, ev[1] / FS, ev[1] / FS - ev[0] / FS, class_name)
                     for class_name, events in predictions[subject_id].items()
                     for ev in events
                 ]
             )
-            pd.DataFrame({"Start": event_start, "Stop": event_stop, "Duration": duration, "Class": classes}).to_csv(
+            pd.DataFrame({"Start_sample": event_start_idx, "Stop_sample": event_stop_idx, "Duration_sample": duration_idx, "Start_second": event_start, "Stop_second": event_stop, "Duration_second": duration, "Class": classes}).to_csv(
                 subject_pred_path, index=False
             )
 
