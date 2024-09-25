@@ -110,7 +110,7 @@ def predict_events(
     # Run over data files
     class_names = list(config.threshold.keys())
     for ev in class_names:
-        df[f"{ev}"] = ([np.nan] * len(df),)
+        df[f"{ev}"] = [np.nan] * len(df)
     logger.info(f"Class names: {class_names}")
     predictions = {k: {ev: [] for ev in class_names} for k in df["ID"]}
     model.eval()
