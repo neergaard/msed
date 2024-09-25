@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "msed"
+version = "0.1"
+description = "Multimodal Sleep Event Detector"
+authors = [
+  { name = "Alexander Neergaard Zahid", email = "aneol@dtu.dk" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.11"
+dynamic = ["dependencies"]
+
+[tool.setuptools]
+packages = ["msed"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.black]
+line-length = 150
+
+[project.scripts]
+msed-predict = "msed.predict_events:main_cli"

@@ -1,0 +1,133 @@
+{
+    "name": "splitstream",
+    "n_gpu": 1,
+    "n_subjects": {
+        "train": null,
+        "eval": null,
+        "test": null
+    },
+    "finetune": false,
+    "pretrain": false,
+    "single_eeg": false,
+    "dataset": {
+        "type": "BalancedMultiEventDataset",
+        "args": {
+            "class_probabilities": {
+                "arousal": 1.0,
+                "lm": 1.0,
+                "sdb": 1.0
+            },
+            "downsampling_rate": 1,
+            "h5_directory": "data/processed/mros",
+            "n_jobs": -2,
+            "channels_start": 0,
+            "channels_end": 10,
+            "n_channels": 10,
+            "signals": {
+                "h5_path": "/data",
+                "fs": 128
+            },
+            "events": [
+                {
+                    "name": "arousal",
+                    "h5_path": "ar"
+                },
+                {
+                    "name": "lm",
+                    "h5_path": "lm"
+                },
+                {
+                    "name": "sdb",
+                    "h5_path": "sdb"
+                }
+            ],
+            "window": 120
+        }
+    },
+    "data_loader": {
+        "batch_size": 128,
+        "drop_last": true,
+        "num_workers": 40,
+        "pin_memory": true
+    },
+    "network": {
+        "type": "SplitStreamNet",
+        "args": {
+            "default_event_sizes": [
+                3,
+                15,
+                30
+            ],
+            "detection_parameters": {
+                "classification_threshold": 0.7,
+                "overlap_non_maximum_suppression": 0.5,
+                "softmax": true
+            },
+            "device": "cuda",
+            "depthwise": "False",
+            "factor_overlap": 2,
+            "filter_base": 4,
+            "fs": 128,
+            "k_max": 7,
+            "maxpool_kernel_size": 2,
+            "kernel_size": 3,
+            "dropout": null,
+            "recurrent_n_hidden": 128,
+            "n_repeats": 3,
+            "attention_n_hidden": 128
+        }
+    },
+    "loss": {
+        "type": "worst_negative_mining",
+        "args": {
+            "alpha": 0.25,
+            "gamma": 2,
+            "weight": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "factor_negative_mining": 3,
+            "default_negative_mining": 10
+        }
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 0.0001,
+            "weight_decay": 0,
+            "amsgrad": true
+        }
+    },
+    "trainer": {
+        "type": "TrainerBase",
+        "args": {
+            "epochs": 100,
+            "metrics": [
+                "precision",
+                "recall",
+                "f1"
+            ],
+            "metric_to_maximize": "f1",
+            "patience": 10,
+            "logger_parameters": null,
+            "threshold_space": {
+                "upper_bound": 1.0,
+                "lower_bound": 0.5,
+                "num_samples": 51,
+                "zoom_in": false
+            },
+            "matching_overlap": 0.5
+        }
+    },
+    "scheduler": {
+        "type": "ReduceLROnPlateau",
+        "args": {
+            "mode": "min",
+            "factor": 0.1,
+            "patience": 5,
+            "verbose": true
+        }
+    }
+}

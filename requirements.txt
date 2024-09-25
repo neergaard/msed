@@ -1,0 +1,19 @@
+einops
+h5py
+joblib
+matplotlib
+mne
+numpy
+pandas
+pyedflib
+rich
+scikit-learn
+seaborn
+statsmodels
+torch >= 2.1.0
+# torch == 1.12.0
+torchaudio
+torchvision
+tqdm
+xmltodict
+wandb
